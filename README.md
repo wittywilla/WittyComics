@@ -15,7 +15,7 @@ The settings are in one **Reading** panel behind the gear button.
 
 The Reader page, and how the server opens comic archives, stay with the server. No comics come with it.
 
-How to use it is in **Help** inside WittyMediaServer: see the books guide.
+How to use it is in **Help** inside WittyMediaServer: see Books, PDFs and comics.
 
 ## How to get it
 
