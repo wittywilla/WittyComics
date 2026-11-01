@@ -1,76 +1,61 @@
-<h1 align="center">WittyComics</h1>
+# WittyComics
 
-<p align="center">
-  <b>A reader for comics, manga and webtoons.</b><br>
-  One page, a two-page spread or one long strip, in either reading direction.
-</p>
+A reader for comics, manga and webtoons. You need it to read comics in WittyMediaServer.
 
-<p align="center">
-  <a href="LICENSE"><img alt="Licence: Apache-2.0" src="https://img.shields.io/badge/licence-Apache--2.0-blue.svg"></a>
-  <img alt="React 18+" src="https://img.shields.io/badge/React-18%2B-61dafb.svg">
-  <img alt="CBZ" src="https://img.shields.io/badge/reads-CBZ%20·%20manga%20·%20webtoons-8b6cff.svg">
-</p>
+## What it does
 
-<p align="center">
-  <a href="#install">Install</a> ·
-  <a href="#use">Use</a> ·
-  <a href="wiki/Reading-comics.md">Reading comics</a> ·
-  <a href="wiki/Home.md"><b>Full guide</b></a>
-</p>
+- **Page, Spread or Scroll:** one page, two side by side with the cover alone so pairs line up as printed, or one vertical strip for webtoons.
+- **Either direction:** left to right, or right to left for manga. Arrows, taps, swipes and the slider all follow it.
+- **Fit height or width:** a whole page on screen, or tall pages read top to bottom.
+- **Easy to turn:** tap the outer thirds, swipe, or use the arrows, Space, Page Up, Page Down, Home and End. Tap the middle for the bars.
+- **Smooth:** the next three pages are fetched ahead.
+- **Remembered per book:** layout, direction and fit, and it reopens on the same page.
 
-> WittyComics is developed and released here. Issues and pull requests are welcome.
+The settings are in one **Reading** panel behind the gear button.
 
-Runs inside [WittyMediaServer](https://github.com/wittywilla/WittyMediaServer) and the
-[WittyReader](https://github.com/wittywilla/WittyReader) app.
+The Reader page, and how the server opens comic archives, stay with the server. No comics come with it.
 
-## Highlights
+How to use it is in **Help** inside WittyMediaServer: see the books guide.
 
-| | | |
-|---|---|---|
-| 📄 | **Page, Spread or Scroll** | one page; two side by side with the cover alone so pairs line up as printed; or one vertical strip for webtoons |
-| ↔️ | **Either direction** | left to right, or right to left for manga; arrows, taps, swipes and the slider all follow it |
-| 🔍 | **Fit height or width** | a whole page on screen, or tall pages read top to bottom |
-| 👆 | **Easy to turn** | tap the outer thirds, swipe, or use arrows, Space, Page Up/Down, Home and End; tap the middle for the bars |
-| ⚡ | **Smooth** | the next three pages are fetched ahead |
-| 💾 | **Remembered per book** | layout, direction and fit, so a manga stays right to left; resumes on the same page |
+## How to get it
 
-The settings live in one **Reading** panel behind the gear button, so the bar stays clean on phones.
+An admin adds it from the module store inside WittyMediaServer: **Settings → Modules**, then **Browse the store**, then **Add** beside WittyComics. That needs WittyMediaServer 0.6.0-alpha or later, and it works with nothing older. The range this version fits is in `module.json`: 0.6.0-alpha through 0.6.x.
 
-## Install
+Adding it brings WittyInk, which it's built on.
+
+## What it needs
+
+[WittyInk](https://github.com/wittywilla/WittyInk), and React 18 or newer, which the app provides.
+
+## Platforms
+
+It's one browser bundle for every system the server runs on, and it runs on whichever device opens the server. It has been seen working in a desktop browser, against a test server on Linux. It also runs in the WittyReader app. Safari, real phones and real TVs have not been tried.
+
+## Building and testing
+
+You need Node.js 22, as CI uses, and Go for the manifest check. In a worktree, first run the copy of `dev-modules.mjs` kept above the repositories (`node D:/projects/dev-modules.mjs` on the development machine). It writes only links that git ignores, so the checkout builds against the repositories beside it.
 
 ```bash
-npm install github:wittywilla/WittyComics
+npm install
 ```
 
-TypeScript and React source, for a bundler such as Vite with `@vitejs/plugin-react`. Needs React 18
-or newer. [WittyInk](https://github.com/wittywilla/WittyInk) is installed with it.
-
-## Use
-
-```tsx
-import { HostContext } from '@wittywilla/wittyink'
-import WittyComics from '@wittywilla/wittycomics'
-
-<HostContext.Provider value={host}><WittyComics /></HostContext.Provider>
+```bash
+npm run build:bundle
 ```
 
-The host's `comic` field lists the pages: `{ pages: number, pageUrl: (n) => string }`. Set `reading`
-to `rtl` (manga) or `webtoon` (vertical strip) to choose the first layout, for example from a comic's
-`ComicInfo.xml`. See [Embedding](wiki/Embedding.md).
+That makes one script and one stylesheet, as a server installs them. To check the manifest:
 
-## The Witty family
+```bash
+go run github.com/wittywilla/wittymodule/cmd/wittymodule check .
+```
 
-| Project | Role |
-|---|---|
-| [WittyInk](https://github.com/wittywilla/WittyInk) | what the readers share |
-| [WittyEbook](https://github.com/wittywilla/WittyEbook) · [WittyPDF](https://github.com/wittywilla/WittyPDF) · **WittyComics** | the book, PDF and comic readers |
-| [WittyReader](https://github.com/wittywilla/WittyReader) · [WittyMediaServer](https://github.com/wittywilla/WittyMediaServer) | the apps they run in |
+It has no tests of its own yet. CI checks the manifest and builds the bundle.
+
+To use it in another app, give it a `ReaderHost` whose `comic` field lists the pages, and set `reading` to `rtl` or `webtoon` to choose the first layout: see [Embedding](wiki/Embedding.md) and the rest of [wiki/](wiki/Home.md).
 
 ## Licence
 
-**Apache-2.0**, the same licence as WittyMediaServer. © 2026 WittyWilla and contributors.
-Use, change and share it; if you redistribute it or build on it, keep the [NOTICE](NOTICE)
-attribution, *“WittyComics, developed by WittyWilla”*, in your NOTICE file, documentation or About screen.
+Apache-2.0: see [LICENSE](LICENSE) and [NOTICE](NOTICE). If you redistribute it or build on it, keep the NOTICE attribution.
 
 ## Legal
 
