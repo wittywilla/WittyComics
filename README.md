@@ -2,6 +2,18 @@
 
 A reader for comics, manga and webtoons. You need it to read comics in WittyMediaServer.
 
+<!-- pictures -->
+
+![A comic open in the reader](docs/images/reader-comic.webp)
+
+<sub>[Pepper&Carrot](https://www.peppercarrot.com/), David Revoy, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).</sub>
+
+![A shelf of comics](docs/images/comics.webp)
+
+<sub>A shelf of comics in WittyMediaServer. [Pepper&Carrot](https://www.peppercarrot.com/), David Revoy, [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), and public-domain strips.</sub>
+
+<!-- /pictures -->
+
 ## What it does
 
 - **Page, Spread or Scroll:** one page, two side by side with the cover alone so pairs line up as printed, or one vertical strip for webtoons.
