@@ -1,3 +1,5 @@
+/* SPDX-License-Identifier: AGPL-3.0-or-later */
+/* Copyright (C) 2026 WittyWilla and contributors */
 /* WittyComics: one page, a spread or a vertical strip. */
 .comic { background: #0b0b0d; }
 .comic-stage { position: absolute; inset: 0; display: flex; justify-content: center; align-items: center; gap: 0; user-select: none; touch-action: pan-y; }
