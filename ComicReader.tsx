@@ -17,7 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Field, IconBack, IconNext, IconPrev, IconSettings, Range, Sheet, useHost } from '@wittywilla/wittyink'
+import { Field, IconBack, IconNext, IconPrev, IconSettings, Range, settingEnum, Sheet, useHost } from '@wittywilla/wittyink'
 import './comics.css'
 
 // Comics and manga page by page: one page, a two-page spread or a vertical
@@ -26,19 +26,27 @@ import './comics.css'
 type Prefs = { mode: 'single' | 'double' | 'strip'; dir: 'ltr' | 'rtl'; fit: 'height' | 'width' }
 const DEF: Prefs = { mode: 'single', dir: 'ltr', fit: 'height' }
 const key = (k: string) => `wms.reader.${k}`
-const load = (k: string, reading: string): Prefs => {
+// A comic's own choices first; then, for one never opened here, the profile's settings
+// (sdui.json) when the host keeps them; then what the comic says about itself.
+const load = (k: string, reading: string, v?: Record<string, unknown>): Prefs => {
   try {
-    const v = localStorage.getItem(key(k))
-    if (v) return { ...DEF, ...JSON.parse(v) }
+    const kept = localStorage.getItem(key(k))
+    if (kept) return { ...DEF, ...JSON.parse(kept) }
   } catch { /* ignore */ }
-  return { ...DEF, dir: reading === 'rtl' ? 'rtl' : 'ltr', mode: reading === 'webtoon' ? 'strip' : 'single' }
+  const own: Prefs = { ...DEF, dir: reading === 'rtl' ? 'rtl' : 'ltr', mode: reading === 'webtoon' ? 'strip' : 'single' }
+  if (!v) return own
+  return {
+    mode: reading === 'webtoon' ? 'strip' : settingEnum(v.layout, ['single', 'double', 'strip'] as const, own.mode),
+    dir: reading === 'rtl' || reading === 'ltr' ? own.dir : settingEnum(v.direction, ['ltr', 'rtl'] as const, own.dir),
+    fit: settingEnum(v.fit, ['height', 'width'] as const, own.fit),
+  }
 }
 
 export default function ComicReader() {
   const host = useHost()
   const pages = host.comic?.pages || 0
   const close = host.close
-  const [p, setP] = useState(() => load(host.key, host.reading || ''))
+  const [p, setP] = useState(() => load(host.key, host.reading || '', host.settings?.get('wittycomics')))
   const [page, setPage] = useState(Math.min(Math.floor(host.start), Math.max(0, pages - 1)))
   const [bar, setBar] = useState(true)
   const [settings, setSettings] = useState(false)

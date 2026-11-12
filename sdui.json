@@ -2,6 +2,79 @@
   "format": "wittymodule-sdui",
   "formatVersion": 1,
   "module": "wittycomics",
-  "catalog": 2,
-  "theme": { "scope": "wittycomics", "label": "Comics and manga reader" }
+  "catalog": 7,
+  "theme": {
+    "scope": "wittycomics",
+    "label": "Comics and manga reader"
+  },
+  "settings": [
+    {
+      "id": "wittycomics",
+      "title": "Comics",
+      "icon": "comic",
+      "groups": [
+        {
+          "title": "For a comic you haven't opened yet",
+          "footer": "Each comic keeps what you choose while reading it. Manga marked right to left, and vertical strips, open as they say.",
+          "rows": [
+            {
+              "key": "layout",
+              "kind": "enum",
+              "scope": "profile",
+              "label": "Layout",
+              "default": "single",
+              "options": [
+                {
+                  "value": "single",
+                  "label": "Page"
+                },
+                {
+                  "value": "double",
+                  "label": "Spread"
+                },
+                {
+                  "value": "strip",
+                  "label": "Scroll"
+                }
+              ]
+            },
+            {
+              "key": "direction",
+              "kind": "enum",
+              "scope": "profile",
+              "label": "Direction",
+              "default": "ltr",
+              "options": [
+                {
+                  "value": "ltr",
+                  "label": "Left to right"
+                },
+                {
+                  "value": "rtl",
+                  "label": "Manga (right to left)"
+                }
+              ]
+            },
+            {
+              "key": "fit",
+              "kind": "enum",
+              "scope": "profile",
+              "label": "Fit",
+              "default": "height",
+              "options": [
+                {
+                  "value": "height",
+                  "label": "Height"
+                },
+                {
+                  "value": "width",
+                  "label": "Width"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
