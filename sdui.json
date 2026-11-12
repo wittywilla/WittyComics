@@ -1,0 +1,7 @@
+{
+  "format": "wittymodule-sdui",
+  "formatVersion": 1,
+  "module": "wittycomics",
+  "catalog": 2,
+  "theme": { "scope": "wittycomics", "label": "Comics and manga reader" }
+}
