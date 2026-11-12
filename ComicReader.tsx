@@ -47,6 +47,9 @@ export default function ComicReader() {
   useEffect(() => { poke(); return () => clearTimeout(barTimer.current) }, [poke])
   const step = p.mode === 'double' && page > 0 ? 2 : 1 // the cover is shown alone in spreads
   const src = (n: number) => host.comic!.pageUrl(n)
+  // A page that can't be shown goes to the host's log, once per page.
+  const reported = useRef(new Set<number>())
+  const broken = (n: number) => { if (!reported.current.has(n)) { reported.current.add(n); host.report?.('warn', 'a comic page could not be shown', { page: String(n + 1) }) } }
   const setPrefs = (v: Partial<Prefs>) => { const n = { ...p, ...v }; setP(n); try { localStorage.setItem(key(host.key), JSON.stringify(n)) } catch { /* ignore */ } }
   const go = useCallback((d: number) => setPage((x) => Math.max(0, Math.min(pages - 1, x + d))), [pages])
   const saved = useRef(-1)
@@ -88,7 +91,7 @@ export default function ComicReader() {
     <div className={'reader comic fit-' + p.fit} onMouseMove={poke}>
       {p.mode === 'strip' ? (
         <div className="comic-strip" ref={strip} onScroll={onStripScroll} onClick={() => setBar((b) => !b)}>
-          {Array.from({ length: pages }, (_, n) => <img key={n} src={src(n)} alt={`Page ${n + 1}`} loading={Math.abs(n - page) < 3 ? 'eager' : 'lazy'} />)}
+          {Array.from({ length: pages }, (_, n) => <img key={n} src={src(n)} alt={`Page ${n + 1}`} loading={Math.abs(n - page) < 3 ? 'eager' : 'lazy'} onError={() => broken(n)} />)}
         </div>
       ) : (
         <div className="comic-stage" onClick={tap} onTouchStart={(e) => { touch.current = e.touches[0].clientX }}
@@ -98,7 +101,7 @@ export default function ComicReader() {
             touch.current = null
             if (Math.abs(dx) > 50) go((dx < 0 !== (p.dir === 'rtl') ? 1 : -1) * step)
           }}>
-          {shown.map((n) => <img key={n} src={src(n)} alt={`Page ${n + 1} of ${pages}`} draggable={false} />)}
+          {shown.map((n) => <img key={n} src={src(n)} alt={`Page ${n + 1} of ${pages}`} draggable={false} onError={() => broken(n)} />)}
         </div>
       )}
       <div className={'reader-bar' + (bar || settings ? '' : ' hidden')} onClick={(e) => e.stopPropagation()}>
