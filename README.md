@@ -69,6 +69,15 @@ To use it in another app, give it a `ReaderHost` whose `comic` field lists the p
 
 GNU Affero General Public License v3.0 (or later): see [LICENSE](LICENSE) and [NOTICE](NOTICE). If you redistribute it or build on it, please keep the NOTICE attribution.
 
+
+## In every app: its server-driven UI
+
+It carries its own `sdui.json`: its theme scope, and **Settings, Comics** (each profile's own): the layout, direction and fit a comic opens with the first time. Its library and book pages come with WittyInk, which every reader shares.
+
+**Stays in the reader's own code:** the reading surface: pages, spreads and the vertical strip.
+
+The file is checked with `wittymodule check` and described in WittyMediaServer's [docs/SDUI-MODULES.md](https://github.com/wittywilla/WittyMediaServer/blob/master/docs/SDUI-MODULES.md).
+
 ## Legal
 
 WittyComics is an independent open-source project. It isn't associated with, sponsored by or
