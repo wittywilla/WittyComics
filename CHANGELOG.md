@@ -5,6 +5,8 @@ What changed in WittyComics, newest first. What changed before it had a reposito
 
 ## Unreleased
 
+- **WittyComics 0.4.0: module API 5.** `integration.json` claims the `cbz` format with the readers hook (`web.readers`), and the bundle exports `register(host)`, which hands the app the reader for it (`{ readers: { cbz: … } }`). The app finds a reader by what the modules in use claim, loading WittyInk first; it no longer keeps a map of formats to readers of its own. The default export stays, for apps that embed the reader (WittyReader).
+- Built with WittyModule's one builder (`kit/web/build-bundle.mjs`, Vite 8); this repository's own copy of the builder is gone. `npm test` checks that `register` hands over exactly the formats `integration.json` claims.
 - **Settings in every app's Settings, under Modules** (`sdui.json`, each profile's own): the layout, direction and fit a comic opens with the first time. Each comic still keeps what you choose while reading it, and manga and strips open as they say. The reading surface itself stays in the reader.
 - A page image that can't be shown is now reported to the host's log (`host.report`), once per page.
 - **Module API 4**, for WittyMediaServer 0.8.0-alpha and later: the module carries its own server-driven UI in `sdui.json`, which `wittymodule pack` puts in every archive.
