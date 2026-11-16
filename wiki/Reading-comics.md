@@ -59,6 +59,9 @@ starts with the app's suggestion:
 - **WittyMediaServer** reads it from `ComicInfo.xml` (`Manga: Yes`) or from a folder whose name
   contains "Manga".
 
+Where the comic doesn't say, WittyMediaServer opens it with your profile's own **Comics**
+settings (in **Settings**, under **Modules**): the layout, direction and fit a comic starts with.
+
 ## Smooth reading
 
 The next three pages are fetched while you read the current one, so turning is instant on slow
