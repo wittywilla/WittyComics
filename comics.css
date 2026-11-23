@@ -9,3 +9,7 @@
 .comic-stage:has(img + img) img { max-width: 50%; }
 .comic-strip { position: absolute; inset: 0; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
 .comic-strip img { width: min(100%, 900px); height: auto; display: block; }
+/* A page on its way (the server may be unpacking the comic): the turning circle, not a blank screen. */
+.comic-stage:not(:has(img.ready))::before { content: ''; position: absolute; top: 50%; left: 50%; width: var(--sp-8, 32px); height: var(--sp-8, 32px); margin: calc(var(--sp-8, 32px) / -2); border-radius: 50%; border: 3px solid color-mix(in srgb, var(--fg, #fff) 20%, transparent); border-top-color: var(--accent, #7c5cff); animation: comic-wait .9s linear infinite; }
+@keyframes comic-wait { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .comic-stage:not(:has(img.ready))::before { animation-duration: 3s; } }

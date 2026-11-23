@@ -3,6 +3,19 @@
 What changed in WittyComics, newest first. What changed before it had a repository of its own is in the
 [WittyMediaServer changelog](https://github.com/wittywilla/WittyMediaServer/blob/master/CHANGELOG.md).
 
+## 0.4.3
+
+- **Back on any TV remote closes the comic.** Some remotes' Back button did nothing in the reader; now every remote's Back works, as Esc does on a keyboard. Back no longer also leaves the page before it, as it could with some remotes.
+- **Spreads stay paired.** Moving to a page with the slider, End or a place kept from single pages no longer shifts every spread by one, and going back no longer skips a page.
+- **A page on its way shows a turning circle** instead of a blank screen while the server unpacks the comic.
+- **On a television,** the reading settings explain the remote's arrows and Back, not taps and swipes.
+
+## Developer notes for 0.4.3
+
+- Back keys (`preventDefault`, so the browser does not go back as well): `Escape`, `GoBack`, `BrowserBack`, `Back` and `XF86Back`, as WittyPlay and the server's player take them.
+- Spreads are 0, 1-2, 3-4...: `first` (the spread's first page) drives `shown` and `step`, and `go` moves from a spread's first page.
+- The waiting circle is CSS only (`.comic-stage:not(:has(img.ready))::before`), slower with reduced motion.
+
 ## 0.4.2
 
 - The README's pictures are retaken from WittyMediaServer 0.8.0-alpha.

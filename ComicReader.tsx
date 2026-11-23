@@ -53,13 +53,16 @@ export default function ComicReader() {
   const barTimer = useRef<any>(null)
   const poke = useCallback(() => { setBar(true); clearTimeout(barTimer.current); barTimer.current = setTimeout(() => setBar(false), 3000) }, [])
   useEffect(() => { poke(); return () => clearTimeout(barTimer.current) }, [poke])
-  const step = p.mode === 'double' && page > 0 ? 2 : 1 // the cover is shown alone in spreads
+  // Spreads: the cover alone, then 1-2, 3-4... A page reached any other way (the slider, End, a
+  // place kept from single pages) opens the spread it belongs to, so every spread stays paired.
+  const first = p.mode === 'double' && page > 0 && page % 2 === 0 ? page - 1 : page
+  const step = p.mode === 'double' && first > 0 ? 2 : 1
   const src = (n: number) => host.comic!.pageUrl(n)
   // A page that can't be shown goes to the host's log, once per page.
   const reported = useRef(new Set<number>())
   const broken = (n: number) => { if (!reported.current.has(n)) { reported.current.add(n); host.report?.('warn', 'a comic page could not be shown', { page: String(n + 1) }) } }
   const setPrefs = (v: Partial<Prefs>) => { const n = { ...p, ...v }; setP(n); try { localStorage.setItem(key(host.key), JSON.stringify(n)) } catch { /* ignore */ } }
-  const go = useCallback((d: number) => setPage((x) => Math.max(0, Math.min(pages - 1, x + d))), [pages])
+  const go = useCallback((d: number) => setPage((x) => Math.max(0, Math.min(pages - 1, (d !== 1 && d !== -1 && x > 0 && x % 2 === 0 ? x - 1 : x) + d))), [pages])
   const saved = useRef(-1)
   const save = (n: number) => { if (n !== saved.current) { saved.current = n; host.saveProgress(n, pages) } }
   useEffect(() => { if (p.mode !== 'strip') save(page) }, [page, p.mode]) // eslint-disable-line react-hooks/exhaustive-deps
@@ -68,7 +71,7 @@ export default function ComicReader() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const fwd = p.dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight', back = p.dir === 'rtl' ? 'ArrowRight' : 'ArrowLeft'
-      if (e.key === 'Escape' || e.key === 'GoBack') { if (settings) setSettings(false); else close() }
+      if (['Escape', 'GoBack', 'BrowserBack', 'Back', 'XF86Back'].includes(e.key)) { e.preventDefault(); if (settings) setSettings(false); else close() }
       else if (p.mode === 'strip') return
       else if (e.key === fwd || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(step) }
       else if (e.key === back || e.key === 'PageUp') { e.preventDefault(); go(-step) }
@@ -93,7 +96,7 @@ export default function ComicReader() {
     if (i >= 0) { save(i); setPage(i) }
   }
   useEffect(() => { if (p.mode === 'strip') strip.current?.querySelectorAll('img')[page]?.scrollIntoView() }, [p.mode]) // eslint-disable-line react-hooks/exhaustive-deps
-  const shown = p.mode === 'double' && page > 0 ? [page, page + 1].filter((n) => n < pages) : [page]
+  const shown = p.mode === 'double' && first > 0 ? [first, first + 1].filter((n) => n < pages) : [page]
   if (p.dir === 'rtl') shown.reverse()
   return (
     <div className={'reader comic fit-' + p.fit} onMouseMove={poke}>
@@ -109,7 +112,7 @@ export default function ComicReader() {
             touch.current = null
             if (Math.abs(dx) > 50) go((dx < 0 !== (p.dir === 'rtl') ? 1 : -1) * step)
           }}>
-          {shown.map((n) => <img key={n} src={src(n)} alt={`Page ${n + 1} of ${pages}`} draggable={false} onError={() => broken(n)} />)}
+          {shown.map((n) => <img key={n} src={src(n)} alt={`Page ${n + 1} of ${pages}`} draggable={false} onLoad={(e) => e.currentTarget.classList.add('ready')} onError={(e) => { e.currentTarget.classList.add('ready'); broken(n) }} />)}
         </div>
       )}
       <div className={'reader-bar' + (bar || settings ? '' : ' hidden')} onClick={(e) => e.stopPropagation()}>
@@ -139,7 +142,9 @@ export default function ComicReader() {
                 <div className="seg">{([['height', 'Fit height'], ['width', 'Fit width']] as const).map(([v, l]) => <button key={v} className={p.fit === v ? 'active' : ''} aria-pressed={p.fit === v} onClick={() => setPrefs({ fit: v })}>{l}</button>)}</div>
               </Field>
             )}
-            <p className="muted small">Tap the sides of the page or swipe to turn pages; tap the middle to show or hide the bars. Arrow keys follow the reading direction.</p>
+            <p className="muted small">{document.documentElement.classList.contains('tv-mode')
+              ? 'The arrows turn pages, following the reading direction. Back closes the book.'
+              : 'Tap the sides of the page or swipe to turn pages; tap the middle to show or hide the bars. Arrow keys follow the reading direction.'}</p>
           </div>
         </Sheet>
       )}
